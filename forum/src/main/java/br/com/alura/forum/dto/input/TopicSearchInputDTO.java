@@ -16,22 +16,36 @@ public class TopicSearchInputDTO {
 
 	private TopicStatus status;
 	private String categoryName;
+	private String courseName;
+	private String desc;
 
 	public Specification<Topic> build() {
 		return (root, query, criteriaBuilder) -> {
-			ArrayList<Predicate> predicates = new ArrayList<>();
+			
+			var predicates = new ArrayList<Predicate>();
 
 			if (status != null) {
 				predicates.add(criteriaBuilder.equal(root.get("status"), status));
 			}
+			
 			if (categoryName != null) {
-				Path<String> rootPath = root.get("course").get("subcategory");
+				var rootPath = root.get("course").get("subcategory");
 				Path<String> categoryNamePath = rootPath.get("parentCategory").get("name");
 				Path<String> subcategoryNamePath = rootPath.get("name");
 				
 				predicates.add(criteriaBuilder.or(criteriaBuilder.like(categoryNamePath, categoryName),
 						criteriaBuilder.like(subcategoryNamePath, categoryName)));
+			}
 			
+			if(desc != null) {
+				Path<String> detailsPath = root.get("details");
+				predicates.add(criteriaBuilder.like(criteriaBuilder.upper(detailsPath), 
+						"%"+desc.toUpperCase()+"%"));
+			}
+			
+			if(courseName != null) {
+				Path<String> courseNamePath = root.get("course").get("name");
+				predicates.add(criteriaBuilder.like(courseNamePath, "%"+courseName+"%"));
 			}
 
 			return criteriaBuilder.and(predicates.toArray(new Predicate[0]));

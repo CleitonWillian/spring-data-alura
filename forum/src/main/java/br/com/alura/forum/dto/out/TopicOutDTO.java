@@ -22,12 +22,14 @@ public class TopicOutDTO {
 	private String categoryName;
 	private int numberOfResponses;
 	private boolean solved;
+	private String title;
 
 	public TopicOutDTO(Topic topic) {
 		this.id = topic.getId();
+		this.title = topic.getTitle();
 		this.shortDescription = topic.getDetails();
 		this.secondsSinceLastUpdate = getSecondsSinceLastUpdate(topic.getLastUpdate());
-		this.ownerName = topic.getUser().getName();
+		this.ownerName = topic.getUserForum().getName();
 		this.courseName = topic.getCourse().getName();
 		this.subcategoryName = topic.getCourse().getSubcategory().getName();
 		this.categoryName = topic.getCourse().getSubcategory().getParentCategory().getName();

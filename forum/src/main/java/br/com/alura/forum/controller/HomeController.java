@@ -1,18 +1,20 @@
 package br.com.alura.forum.controller;
 
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.RestController;
 
-@RestController
-@RequestMapping("isAlive")
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import br.com.alura.forum.annotation.Get;
+import br.com.alura.forum.annotation.Rest;
+
+@Rest("isAlive")
 public class HomeController {
 	
-	@GetMapping
-	@ResponseBody
+	Logger logger = LoggerFactory.getLogger(this.getClass());
+	
+	@Get
 	public String index() {
-		System.out.println("Hello World");
+		logger.info("Hello World");
 		return "Hello World";
 	}
 
