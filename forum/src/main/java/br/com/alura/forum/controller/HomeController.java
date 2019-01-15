@@ -33,8 +33,8 @@ public class HomeController {
 	}
 
 	// Popular o banco de dados
-	@Get(path = "criaMock", produces = MediaType.TEXT_PLAIN_VALUE)
-	public ResponseEntity<String> criaMock() {
+	@Get(path = "populaBanco", produces = MediaType.TEXT_PLAIN_VALUE)
+	public ResponseEntity<String> populaBanco() {
 		try {
 			var subcategoria = new Categoria("Java", new Categoria("Programacao"));
 

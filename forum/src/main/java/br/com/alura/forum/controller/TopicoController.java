@@ -30,31 +30,25 @@ public class TopicoController {
 
 	@Get("topicosPorTitulo")
 	public ResponseEntity<List<TopicoSaidaDTO>> topicosPorTitulo(String topicos) {
-		return new ResponseEntity<>(TopicoSaidaDTO.listaApartirDeTopicos(topicoRepository.topicosPorTitulo(topicos)),
+		return new ResponseEntity<>(TopicoSaidaDTO.listaApartirDeTopicos(topicoRepository.topicosPorTituloJPQL(topicos)),
 				HttpStatus.OK);
 	}
 
 	@Get("topicosPorData")
-	public ResponseEntity<List<TopicoSaidaDTO>> findBeteenDate(
-			@RequestParam(value = "de", required = false) String dataInicial,
-			@RequestParam(value = "ate", required = false) String dataFinal) {
-
-		if (dataFinal == null)
-			dataFinal = DataUtil.dataMaxima();
-
-		if (dataInicial == null)
-			dataInicial = DataUtil.dataMinima();
+	public ResponseEntity<List<TopicoSaidaDTO>> topicosPorData(
+			@RequestParam(value = "de", required = true) String dataInicial,
+			@RequestParam(value = "ate", required = true) String dataFinal) {
 
 		var de = LocalDate.parse(dataInicial, DataUtil.FORMATADOR);
 		var ate = LocalDate.parse(dataFinal, DataUtil.FORMATADOR);
 
 		return new ResponseEntity<>(
-				TopicoSaidaDTO.listaApartirDeTopicos(topicoRepository.findByCreatedIn_Between(de, ate)), HttpStatus.OK);
+				TopicoSaidaDTO.listaApartirDeTopicos(topicoRepository.findByCriadoEm_Between(de, ate)), HttpStatus.OK);
 	}
 
-	@Get("countTopicUser")
-	public ResponseEntity<Long> countTopicUser(String user) {
-		return new ResponseEntity<>(topicoRepository.countByUserForum_Name(user), HttpStatus.OK);
+	@Get("quantosTopicosPossuiOUsuario")
+	public ResponseEntity<Long> quantosTopicosPossuiOUsuario(String usuarioNome) {
+		return new ResponseEntity<>(topicoRepository.countByUsuarioForum_Nome(usuarioNome), HttpStatus.OK);
 	}
 
 }

@@ -7,6 +7,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
+import org.springframework.lang.Nullable;
 
 import br.com.alura.forum.entity.Topico;
 
@@ -17,21 +18,21 @@ public interface TopicoRepository extends CrudRepository<Topico, Long> , JpaSpec
 	List<Topico> findAll(Sort sort);
 	
 	//Query Method
-	List<Topico> findByTitle(String title);
+	List<Topico> findByTitulo(String titulo);
 	
 	//Query JDBC
-	@Query(value = "select * from topic t where t.title = ?1", nativeQuery = true )
-	List<Topico> allByTopicTitleNative(String title);
+	@Query(value = "select * from topico t where t.titulo = ?1", nativeQuery = true )
+	List<Topico> topicosPorTituloJDBC(String titulo);
 	
 	//Query JPQL
-	@Query(value = "select object(t) from Topic as t where t.title = ?1")
-	List<Topico> topicosPorTitulo(String title);
+	@Query(value = "select object(t) from Topico as t where t.titulo = ?1")
+	List<Topico> topicosPorTituloJPQL(String titulo);
 	
-	Long countByUserForum_Name(String name);
+	Long countByUsuarioForum_Nome(String nome);
 	
-	List<Topico>findByCreatedIn_Between(LocalDate initialDate, LocalDate finalDate);
+	List<Topico>findByCriadoEm_Between(LocalDate dataInicial, LocalDate dataFinal);
 	
-	List<Topico> findFirst3ByTitleOrderById(String title);
+	List<Topico> findFirst3ByTituloOrderById(String titutlo);
 	
 	
 }
