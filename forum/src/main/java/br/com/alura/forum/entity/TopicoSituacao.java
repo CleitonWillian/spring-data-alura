@@ -1,7 +1,9 @@
 
 package br.com.alura.forum.entity;
 
-public enum TopicStatus {
+public enum TopicoSituacao {
 
-	SOLVED,UNSOLVED
+	RESOLVIDO,
+	NAO_RESOLVIDO;
+	
 }

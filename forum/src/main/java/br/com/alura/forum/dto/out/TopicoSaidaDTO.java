@@ -6,45 +6,48 @@ import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import br.com.alura.forum.entity.Topic;
-import br.com.alura.forum.entity.TopicStatus;
+import br.com.alura.forum.entity.Topico;
+import br.com.alura.forum.entity.TopicoSituacao;
+import br.com.alura.forum.util.DataUtil;
 import lombok.Data;
 
 @Data
-public class TopicOutDTO {
+public class TopicoSaidaDTO {
 
 	private Long id;
-	private String shortDescription;
-	private long secondsSinceLastUpdate;
-	private String ownerName;
-	private String courseName;
-	private String subcategoryName;
-	private String categoryName;
-	private int numberOfResponses;
-	private boolean solved;
-	private String title;
+	private String pequenaDescricao;
+	private long segundosDesdeDaUltimaAtualizacao;
+	private String nomeDoProprietario;
+	private String nomeDoCurso;
+	private String nomeDaSubcategoria;
+	private String nomeDaCategoria;
+	private int numeroDePerguntas;
+	private boolean resolvido;
+	private String titulo;
+	private String criadoEm;
 
-	public TopicOutDTO(Topic topic) {
-		this.id = topic.getId();
-		this.title = topic.getTitle();
-		this.shortDescription = topic.getDetails();
-		this.secondsSinceLastUpdate = getSecondsSinceLastUpdate(topic.getLastUpdate());
-		this.ownerName = topic.getUserForum().getName();
-		this.courseName = topic.getCourse().getName();
-		this.subcategoryName = topic.getCourse().getSubcategory().getName();
-		this.categoryName = topic.getCourse().getSubcategory().getParentCategory().getName();
-		this.numberOfResponses = topic.getNumberOfAnswers();
-		this.solved = TopicStatus.SOLVED.equals(topic.getStatus());
+	public TopicoSaidaDTO(Topico topico) {
+		this.id = topico.getId();
+		this.titulo = topico.getTitulo();
+		this.pequenaDescricao = topico.getDetalhes();
+		this.segundosDesdeDaUltimaAtualizacao = getSegundosDesdeDaUltimaAtualizacao(topico.getUltimaAtualizacao());
+		this.nomeDoProprietario = topico.getUsuarioForum().getNome();
+		this.nomeDoCurso = topico.getCurso().getNome();
+		this.nomeDaSubcategoria = topico.getCurso().getSubcategoria().getName();
+		this.nomeDaCategoria = topico.getCurso().getSubcategoria().getCategoriaPai().getName();
+		this.numeroDePerguntas = topico.getNumeroDePerguntas();
+		this.criadoEm = topico.getCriadoEm().format(DataUtil.FORMATADOR) ;
+		this.resolvido = TopicoSituacao.RESOLVIDO.equals(topico.getSituacao());
 	
 	}
 	
-	public static List<TopicOutDTO> listFromTopics(List<Topic> topics){ 
-		return topics.stream().map(TopicOutDTO::new).collect(Collectors.toList());
+	public static List<TopicoSaidaDTO> listaApartirDeTopicos(List<Topico> topicos){ 
+		return topicos.stream().map(TopicoSaidaDTO::new).collect(Collectors.toList());
 	}
 
 
-	public long getSecondsSinceLastUpdate(Instant lastUpdate) {
-		return Duration.between(lastUpdate, Instant.now()).get(ChronoUnit.SECONDS);
+	public long getSegundosDesdeDaUltimaAtualizacao(Instant ultimaAtualizacao) {
+		return Duration.between(ultimaAtualizacao, Instant.now()).get(ChronoUnit.SECONDS);
 	}
 
 	

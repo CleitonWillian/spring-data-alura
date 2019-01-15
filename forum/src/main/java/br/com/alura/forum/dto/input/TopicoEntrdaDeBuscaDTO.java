@@ -7,19 +7,19 @@ import javax.persistence.criteria.Predicate;
 
 import org.springframework.data.jpa.domain.Specification;
 
-import br.com.alura.forum.entity.Topic;
-import br.com.alura.forum.entity.TopicStatus;
+import br.com.alura.forum.entity.Topico;
+import br.com.alura.forum.entity.TopicoSituacao;
 import lombok.Data;
 
 @Data
-public class TopicSearchInputDTO {
+public class TopicoEntrdaDeBuscaDTO {
 
-	private TopicStatus status;
+	private TopicoSituacao status;
 	private String categoryName;
 	private String courseName;
 	private String desc;
 
-	public Specification<Topic> build() {
+	public Specification<Topico> criarSpecification() {
 		return (root, query, criteriaBuilder) -> {
 			
 			var predicates = new ArrayList<Predicate>();

@@ -15,22 +15,22 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @Entity
-public class Category {
+public class Categoria {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private Long id;
 	private String name;
 	@OneToOne(cascade = CascadeType.PERSIST, fetch = FetchType.LAZY)
-    @JoinColumn(name = "parentcategory_id", nullable=true)
-	private Category parentCategory;
+    @JoinColumn(name = "categoriapai_id", nullable=true)
+	private Categoria categoriaPai;
 
-	public Category(String name, Category category) {
+	public Categoria(String name, Categoria categoria) {
 		this.name = name;
-		this.parentCategory = category;
+		this.categoriaPai = categoria;
 	}
 
-	public Category(String name) {
+	public Categoria(String name) {
 		this.name = name;
 
 	}

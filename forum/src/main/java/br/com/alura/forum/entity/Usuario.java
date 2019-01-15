@@ -12,20 +12,20 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @Entity
-public class User {
+public class Usuario {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private Long id;
-	private String name;
+	private String nome;
 	@Column(nullable = false, unique = true)
 	private String email;
-	private String password;
+	private String senha;
 
-	public User(String name, String email, String password) {
-		this.name = name;
+	public Usuario(String nome, String email, String senha) {
+		this.nome = nome;
 		this.email = email;
-		this.password = password;
+		this.senha = senha;
 	}
 
 

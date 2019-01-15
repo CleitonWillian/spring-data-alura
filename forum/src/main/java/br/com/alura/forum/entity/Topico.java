@@ -1,6 +1,7 @@
 package br.com.alura.forum.entity;
 
 import java.time.Instant;
+import java.time.LocalDate;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
@@ -17,30 +18,33 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @Entity
-public class Topic {
+public class Topico {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private long id;
-	private String title;
-	private String details;
+	private String titulo;
+	private String detalhes;
 	@OneToOne(cascade = CascadeType.PERSIST, fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id")
-	private User userForum;
+    @JoinColumn(name = "usuario_forum_id")
+	private Usuario usuarioForum;
 	@OneToOne(cascade = CascadeType.PERSIST, fetch = FetchType.LAZY)
     @JoinColumn(name = "course_id")
-	private Course course;
-	private Instant lastUpdate;
-	private int numberOfAnswers;
-	private TopicStatus status;
+	private Curso curso;
+	private Instant ultimaAtualizacao;
+	private LocalDate criadoEm;
+	private int numeroDePerguntas;
+	private TopicoSituacao situacao;
 
-	public Topic(String title, String details, User user, Course course) {
-		this.title = title;
-		this.details = details;
-		this.userForum = user;
-		this.course = course;
-		this.lastUpdate = Instant.now();
-		this.status = TopicStatus.UNSOLVED;
+	public Topico(String titulo, String detailhes, Usuario user, Curso curso) {
+	
+		this.titulo = titulo;
+		this.detalhes = detailhes;
+		this.usuarioForum = user;
+		this.curso = curso;
+		this.ultimaAtualizacao = Instant.now();
+		this.criadoEm = LocalDate.now();
+		this.situacao = TopicoSituacao.NAO_RESOLVIDO;
 	}
 
 }

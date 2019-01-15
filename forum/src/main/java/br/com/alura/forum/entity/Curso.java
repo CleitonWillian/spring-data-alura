@@ -17,20 +17,20 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Entity
 @Table(name = "Course")
-public class Course {
+public class Curso {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private Long id;
-	private String name;
+	private String nome;
 	@OneToOne(cascade = CascadeType.PERSIST, fetch = FetchType.LAZY)
-    @JoinColumn(name = "category_id")
-	private Category subcategory;
+    @JoinColumn(name = "categoria_id")
+	private Categoria subcategoria;
 	
 
-	public Course(String name, Category subcategory) {
-		this.name = name;
-		this.subcategory = subcategory;
+	public Curso(String nome, Categoria subcategoria) {
+		this.nome = nome;
+		this.subcategoria = subcategoria;
 	}
 
 
