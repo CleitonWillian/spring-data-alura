@@ -1,6 +1,7 @@
 package br.com.alura.forum.controller;
 
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,11 +37,17 @@ public class TopicoController {
 
 	@Get("topicosPorData")
 	public ResponseEntity<List<TopicoSaidaDTO>> topicosPorData(
-			@RequestParam(value = "de", required = true) String dataInicial,
-			@RequestParam(value = "ate", required = true) String dataFinal) {
+			@RequestParam(value = "de", required = false) String dataInicial,
+			@RequestParam(value = "ate", required = false) String dataFinal) {
 
+		if(dataFinal == null)
+			dataFinal = DataUtil.dataMaxima();
+		
+		if(dataInicial == null)
+			dataInicial = DataUtil.dataMinima();
+		
 		var de = LocalDate.parse(dataInicial, DataUtil.FORMATADOR);
-		var ate = LocalDate.parse(dataFinal, DataUtil.FORMATADOR);
+		var ate =LocalDate.parse(dataFinal, DataUtil.FORMATADOR);
 
 		return new ResponseEntity<>(
 				TopicoSaidaDTO.listaApartirDeTopicos(topicoRepository.findByCriadoEm_Between(de, ate)), HttpStatus.OK);

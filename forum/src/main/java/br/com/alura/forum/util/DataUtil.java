@@ -8,11 +8,11 @@ public class DataUtil {
 	public static final DateTimeFormatter FORMATADOR = DateTimeFormatter.ofPattern("dd-MM-yyyy");
 	
 	public static final String dataMaxima() {
-		return LocalDate.MAX.format(FORMATADOR);
+		return LocalDate.now().format(FORMATADOR);
 	}
 
 	public static final String dataMinima() {
-		return LocalDate.MIN.format(FORMATADOR);
+		return LocalDate.of(1000, 01, 01).format(FORMATADOR);
 	}
 
 	

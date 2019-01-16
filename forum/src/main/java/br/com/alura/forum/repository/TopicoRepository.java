@@ -30,7 +30,7 @@ public interface TopicoRepository extends CrudRepository<Topico, Long> , JpaSpec
 	
 	Long countByUsuarioForum_Nome(String nome);
 	
-	List<Topico>findByCriadoEm_Between(LocalDate dataInicial, LocalDate dataFinal);
+	List<Topico>findByCriadoEm_Between(LocalDate dataInicial,LocalDate dataFinal);
 	
 	List<Topico> findFirst3ByTituloOrderById(String titutlo);
 	
