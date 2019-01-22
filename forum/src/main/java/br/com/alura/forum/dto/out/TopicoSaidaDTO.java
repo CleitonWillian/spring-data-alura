@@ -21,7 +21,6 @@ public class TopicoSaidaDTO {
 	private String nomeDoCurso;
 	private String nomeDaSubcategoria;
 	private String nomeDaCategoria;
-	private int numeroDePerguntas;
 	private boolean resolvido;
 	private String titulo;
 	private String criadoEm;
@@ -35,7 +34,6 @@ public class TopicoSaidaDTO {
 		this.nomeDoCurso = topico.getCurso().getNome();
 		this.nomeDaSubcategoria = topico.getCurso().getSubcategoria().getName();
 		this.nomeDaCategoria = topico.getCurso().getSubcategoria().getCategoriaPai().getName();
-		this.numeroDePerguntas = topico.getNumeroDePerguntas();
 		this.criadoEm = topico.getCriadoEm().format(DataUtil.FORMATADOR) ;
 		this.resolvido = TopicoSituacao.RESOLVIDO.equals(topico.getSituacao());
 	

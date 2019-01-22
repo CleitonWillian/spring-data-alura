@@ -1,61 +1,101 @@
 package br.com.alura.forum.controller;
 
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 import java.util.List;
+
+import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import br.com.alura.forum.annotation.Get;
+import br.com.alura.forum.annotation.Post;
+import br.com.alura.forum.annotation.Put;
 import br.com.alura.forum.annotation.Rest;
-import br.com.alura.forum.dto.input.TopicoEntrdaDeBuscaDTO;
+import br.com.alura.forum.dto.input.TopicoEntradaDeBuscaDTO;
+import br.com.alura.forum.dto.input.TopicoNovoDTO;
 import br.com.alura.forum.dto.out.TopicoSaidaDTO;
+import br.com.alura.forum.entity.Topico;
+import br.com.alura.forum.repository.CursoRepository;
 import br.com.alura.forum.repository.TopicoRepository;
+import br.com.alura.forum.repository.UsuarioRepository;
 import br.com.alura.forum.util.DataUtil;
 
-@Rest("api")
+@Rest("api/topicos")
 public class TopicoController {
 
 	@Autowired
 	private TopicoRepository topicoRepository;
 
-	@Get("topicos")
-	public ResponseEntity<List<TopicoSaidaDTO>> listarTopicos(TopicoEntrdaDeBuscaDTO buscarTopico) {
-		return new ResponseEntity<>(
-				TopicoSaidaDTO.listaApartirDeTopicos(topicoRepository.findAll(buscarTopico.criarSpecification())),
-				HttpStatus.OK);
+	@Autowired
+	private UsuarioRepository usuarioRepository;
+
+	@Autowired
+	private CursoRepository cursoRepository;
+
+	@Get()
+	public ResponseEntity<List<TopicoSaidaDTO>> listarTopicos(TopicoEntradaDeBuscaDTO buscarTopico) {
+		var todosOsTopicos = topicoRepository.findAll(buscarTopico.criarSpecification());
+		return new ResponseEntity<>(TopicoSaidaDTO.listaApartirDeTopicos(todosOsTopicos), HttpStatus.OK);
 	}
 
-	@Get("topicosPorTitulo")
-	public ResponseEntity<List<TopicoSaidaDTO>> topicosPorTitulo(String topicos) {
-		return new ResponseEntity<>(TopicoSaidaDTO.listaApartirDeTopicos(topicoRepository.topicosPorTituloJPQL(topicos)),
-				HttpStatus.OK);
+	@Get("porTituloJPQL")
+	public ResponseEntity<List<TopicoSaidaDTO>> topicosPorTituloJPQL(String titulo) {
+		var topicosPorTituloJPQL = topicoRepository.topicosPorTituloJPQL(titulo);
+		return new ResponseEntity<>(TopicoSaidaDTO.listaApartirDeTopicos(topicosPorTituloJPQL), HttpStatus.OK);
+	}
+	
+	@Get("porTituloJDBC")
+	public ResponseEntity<List<TopicoSaidaDTO>> topicosPorTituloJDBC(String titulo) {
+		var topicosPorTituloJDBC = topicoRepository.topicosPorTituloJDBC(titulo);
+		return new ResponseEntity<>(TopicoSaidaDTO.listaApartirDeTopicos(topicosPorTituloJDBC), HttpStatus.OK);
 	}
 
-	@Get("topicosPorData")
+	
+
+	@Get("porData")
 	public ResponseEntity<List<TopicoSaidaDTO>> topicosPorData(
 			@RequestParam(value = "de", required = false) String dataInicial,
 			@RequestParam(value = "ate", required = false) String dataFinal) {
 
-		if(dataFinal == null)
-			dataFinal = DataUtil.dataMaxima();
-		
-		if(dataInicial == null)
-			dataInicial = DataUtil.dataMinima();
-		
-		var de = LocalDate.parse(dataInicial, DataUtil.FORMATADOR);
-		var ate =LocalDate.parse(dataFinal, DataUtil.FORMATADOR);
-
+		var de = DataUtil.validaERetornaDataMinimaFormatada(dataInicial);
+		var ate = DataUtil.validaERetornaDataMaximaFormatada(dataFinal);
+		var topicosEntreAData = topicoRepository.findByCriadoEm_Between(de, ate);
 		return new ResponseEntity<>(
-				TopicoSaidaDTO.listaApartirDeTopicos(topicoRepository.findByCriadoEm_Between(de, ate)), HttpStatus.OK);
+				TopicoSaidaDTO.listaApartirDeTopicos(topicosEntreAData), HttpStatus.OK);
 	}
 
-	@Get("quantosTopicosPossuiOUsuario")
-	public ResponseEntity<Long> quantosTopicosPossuiOUsuario(String usuarioNome) {
-		return new ResponseEntity<>(topicoRepository.countByUsuarioForum_Nome(usuarioNome), HttpStatus.OK);
+	@Get("{email}/quantdadePorUsuario")
+	public ResponseEntity<Long> quantosTopicosPossuiOUsuario(String email) {
+		return new ResponseEntity<>(topicoRepository.countByUsuarioForum_Email(email), HttpStatus.OK);
+	}
+
+	@Get("{email}/apartirDe")
+	public ResponseEntity<List<TopicoSaidaDTO>> topicosPosUsuarioApartirDe(@RequestParam("email") String email,
+			String dataInicial) {
+
+		var de = DataUtil.validaERetornaDataMinimaFormatada(dataInicial);
+		var usuario = usuarioRepository.findByEmail(email);
+		var topicosApartirDe = topicoRepository.findByUsuarioForumAndCriadoEmAfterOrderByCriadoEm(usuario, de);
+
+		return new ResponseEntity<>(TopicoSaidaDTO.listaApartirDeTopicos(topicosApartirDe), HttpStatus.OK);
+	}
+
+	@Post("{email}/novo")
+	public ResponseEntity<String> novoTopico(@RequestParam("email") String email,
+			@Valid @RequestBody TopicoNovoDTO novoTopico) {
+		var topicoEntidade = novoTopico.criaTopico(email, usuarioRepository, cursoRepository);
+		topicoRepository.save(topicoEntidade);
+		return ResponseEntity.accepted().build();
+
+	}
+	
+	@Put("{email}/titulo")
+	public ResponseEntity<Integer> atualizaTitulo(@RequestParam("email")String email,String titulo, int id) {
+		return new ResponseEntity<>(topicoRepository.setTituloById(titulo, id, email), HttpStatus.OK);
 	}
 
 }

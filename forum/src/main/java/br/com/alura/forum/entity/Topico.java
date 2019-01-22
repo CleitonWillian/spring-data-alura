@@ -26,21 +26,21 @@ public class Topico {
 	private String titulo;
 	private String detalhes;
 	@OneToOne(cascade = CascadeType.PERSIST, fetch = FetchType.LAZY)
-    @JoinColumn(name = "usuario_forum_id")
+    @JoinColumn(name = "usuario_forum_id", nullable = false)
 	private Usuario usuarioForum;
 	@OneToOne(cascade = CascadeType.PERSIST, fetch = FetchType.LAZY)
-    @JoinColumn(name = "course_id")
+    @JoinColumn(name = "curso_id" , nullable = false)
 	private Curso curso;
 	private Instant ultimaAtualizacao;
 	private LocalDate criadoEm;
-	private int numeroDePerguntas;
 	private TopicoSituacao situacao;
 
-	public Topico(String titulo, String detailhes, Usuario user, Curso curso) {
+	
+	public Topico(String titulo, String detalhes, Usuario usuario, Curso curso) {
 	
 		this.titulo = titulo;
-		this.detalhes = detailhes;
-		this.usuarioForum = user;
+		this.detalhes = detalhes;
+		this.usuarioForum = usuario;
 		this.curso = curso;
 		this.ultimaAtualizacao = Instant.now();
 		this.criadoEm = LocalDate.now();

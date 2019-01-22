@@ -32,8 +32,12 @@ public class HomeController {
 		return "Hello World";
 	}
 
-	// Popular o banco de dados
-	@Get(path = "populaBanco", produces = MediaType.TEXT_PLAIN_VALUE)
+	/*
+	 *  Popular o banco de dados 
+	 *  Não ficara no codigo para ensino
+	 *  ideal popular com arquivo mysql
+	 */
+	@Get("populaBanco")
 	public ResponseEntity<String> populaBanco() {
 		try {
 			var subcategoria = new Categoria("Java", new Categoria("Programacao"));
@@ -41,35 +45,35 @@ public class HomeController {
 			var curso1 = new Curso("Java e JSF", subcategoria);
 			var curso2 = new Curso("Spring", subcategoria);
 			
-			var fulano = new Usuario("Fulano", "fulano@gmail.com", "12345");
+			var fulano = new Usuario("Fulano", "fulano@gmail.com");
 
 			var topico1 = new Topico("Problemas com JSF", "Erro ao fazer conversão da data", fulano, curso1);
 			topico1.setCriadoEm(LocalDate.now().minusDays(20));
 
 			var topico2 = new Topico("Erro no JSF", "Erro com Taglib",
-					new Usuario("Beltrano", "beltrano@gmail.com", "654321"), curso1);
+					new Usuario("Beltrano", "beltrano@gmail.com", LocalDate.now().minusDays(20)), curso1);
 			topico2.setSituacao(TopicoSituacao.RESOLVIDO);
 			topico2.setCriadoEm(LocalDate.now().minusDays(110));
 
 			var topico3 = new Topico("Problema com SpringBoot", "Erro ao criar um Bean",
-					new Usuario("Ciclano", "ciclano@gmail.com", "654321"), curso2);
+					new Usuario("Ciclano", "ciclano@gmail.com",LocalDate.now().minusDays(50)), curso2);
 			topico3.setCriadoEm(LocalDate.now().minusDays(200));
 
 			var topico4 = new Topico("JWT no SpringBoot", "Configuracao do JWT no Spring Boot", fulano, curso1);
 			topico4.setCriadoEm(LocalDate.now().minusDays(300));
 
 			var topico5 = new Topico("Erro no SpringBoot", "Erro ao criar controller",
-					new Usuario("Joana", "joana@gmail.com", "102938"), curso2);
+					new Usuario("Joana", "joana@gmail.com", LocalDate.now().minusDays(300)), curso2);
 			topico5.setSituacao(TopicoSituacao.RESOLVIDO);
 			topico5.setCriadoEm(LocalDate.now().minusDays(350));
 
 			var topico6 = new Topico("SpringBoot não sobe", "Application failed, erro no data source",
-					new Usuario("Aline", "aline@gmail.com", "832910"), curso2);
+					new Usuario("Aline", "aline@gmail.com",LocalDate.now().minusDays(9)), curso2);
 			topico6.setSituacao(TopicoSituacao.RESOLVIDO);
 			topico6.setCriadoEm(LocalDate.now().minusDays(10));
 
 			topicoRepository.saveAll(Arrays.asList(topico1, topico2, topico3, topico4, topico5, topico6));
-			return new ResponseEntity<>("ok", HttpStatus.OK);
+			return ResponseEntity.accepted().build();
 		} catch (Exception e) {
 			e.printStackTrace();
 			return new ResponseEntity<>(e.getCause().getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
