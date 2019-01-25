@@ -6,7 +6,7 @@
 /*!40103 SET @OLD_TIME_ZONE=@@TIME_ZONE */;
 /*!40103 SET TIME_ZONE='+00:00' */;
 /*!40014 SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0 */;
-/*!40014 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0 */;
+/*!40014 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, 	FOREIGN_KEY_CHECKS=0 */;
 /*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
@@ -129,13 +129,19 @@ DELIMITER ;;
 CREATE DEFINER=`root`@`localhost` PROCEDURE `abandonarTopicos`(IN data_abandono date, OUT res varchar(100))
 BEGIN 
   
-	update fj27_spring.topico t
-	set t.situacao = 'abandonado'
-	where t.criado_em < data_abandono and t.situacao = 'nao resolvido';
+	 declare ind int;
+	set ind = 
+     (select count(*) from  fj27_spring.topico t
+	where t.criado_em < data_abandono and t.situacao = 'nao resolvido');
     
-	set res = 'chamando procedure';
- 
- 
+  		if ind > 0 then
+			 update fj27_spring.topico t 
+			 set t.situacao = 'abandonado'
+			 where t.criado_em < data_abandono and t.situacao = 'nao resolvido'; 
+			 set retorno = concat('Foi atualizado (', ind , ' )Topico(s) para  situação abandonado com a data menor que ', data_abandono  );
+ 		else 
+			set retorno= concat('Nenhum topico para atualizar para situação de abando com a data menor que ', data_abandono);
+ 		end if;
 END ;;
 DELIMITER ;
 /*!50003 SET sql_mode              = @saved_sql_mode */ ;
