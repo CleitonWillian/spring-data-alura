@@ -1,11 +1,13 @@
 package br.com.alura.forum.repository;
 
 import java.time.LocalDate;
+import java.util.Date;
 import java.util.List;
 
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.jpa.repository.query.Procedure;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -43,6 +45,8 @@ public interface TopicoRepository extends CrudRepository<Topico, Long> , JpaSpec
 	@Query("update Topico t set t.titulo = ?1 where t.id = ?2 and t.usuarioForum.email = ?3")
 	int setTituloById(String titulo, long id, String email);
 	
+	@Procedure("abandonarTopicos")
+	String abandonarTopicosAntesDe(LocalDate data);
 	
 	
 	
